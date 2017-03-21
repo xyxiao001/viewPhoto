@@ -28,7 +28,7 @@ module.exports = {
       loader: 'vue-loader'
     },
      {
-        test: /\.scss$/,
+        test: /\.s[a|c]ss$/,
         use: [{
             loader: "style-loader"
         }, {
@@ -53,7 +53,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
    // 开启全局的模块热替换(HMR)
   //  new ExtractTextPlugin("index.scss")
-    new webpack.NamedModulesPlugin(),
+  new webpack.NamedModulesPlugin(),
    // 当模块热替换(HMR)时在浏览器控制台输出对用户更友好的模块名字信息
 
    // 压缩
