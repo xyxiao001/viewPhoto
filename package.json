@@ -1,0 +1,49 @@
+{
+  "name": "view-photo",
+  "version": "0.0.1",
+  "description": "see photo",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xyxiao001/viewPhoto.git"
+  },
+  "keywords": [
+    "photo",
+    "vue"
+  ],
+  "author": "goodboy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xyxiao001/viewPhoto/issues"
+  },
+  "homepage": "https://github.com/xyxiao001/viewPhoto#readme",
+  "dependencies": {
+    "ansi-html": "^0.0.7",
+    "autoprefixer": "^6.7.7",
+    "babel-preset-stage-2": "^6.13.0",
+    "css-loader": "^0.27.3",
+    "node-sass": "^4.5.0",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.14.1",
+    "vue": "^2.2.4",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^11.1.4",
+    "vue-style-loader": "^2.0.4",
+    "vue-template-compiler": "^2.2.4",
+    "webpack": "^2.2.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.13.2",
+    "postcss-loader": "^1.3.3",
+    "precss": "^1.4.0",
+    "press": "^0.0.2",
+    "webpack-dev-server": "^2.4.2"
+  }
+}
