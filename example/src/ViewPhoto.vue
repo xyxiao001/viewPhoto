@@ -15,7 +15,7 @@
        <div class="view-close" @click="exit">
          <i class="iconfont icon-close"></i>
        </div>
-      <span class="size">{{(this.size * 100).toFixed(1) + '%'}}</span>
+      <span class="size">{{(this.size * 100).toFixed(0) + '%'}}</span>
     </div>
   </div>
 </template>
@@ -73,7 +73,7 @@ export default {
       this.reallyWidth = window.getComputedStyle(img).width.replace('px', '')
       if ((screen - 100) < img.height) {
         this.size = (screen - 100) / img.height
-        this.size = parseFloat(this.size.toFixed(3))
+        this.size = parseFloat(this.size.toFixed(2))
         img.style.height = screen - 100 + 'px'
       } else {
         this.size = 1
@@ -117,10 +117,25 @@ export default {
     },
     changeSize () {
       var change = event.deltaY
+      var top = window.getComputedStyle(this.$refs.showImg).top.replace('px', '')
+      var left = window.getComputedStyle(this.$refs.showImg).left.replace('px', '')
       if (change < 0) {
-        this.size += 0.06
+        if (this.size > 0.9 && this.size < 1 ) {
+          var num = 1 - this.size
+          this.size = 1
+          this.$refs.showImg.style.top = ~~(top) - num / 2 * this.reallyHeight + 'px'
+          this.$refs.showImg.style.left = ~~(left) - num / 2 * this.reallyWidth + 'px'
+        } else {
+          this.size += 0.06
+          this.$refs.showImg.style.top = ~~(top) - 0.03 * this.reallyHeight + 'px'
+          this.$refs.showImg.style.left = ~~(left) - 0.03 * this.reallyWidth + 'px'
+        }
       } else {
-        this.size = this.size > 0.06 ? this.size - 0.06 : this.size
+        if (this.size > 0.12) {
+          this.size -= 0.06
+          this.$refs.showImg.style.top = ~~(top) + 0.03 * this.reallyHeight + 'px'
+          this.$refs.showImg.style.left = ~~(left) + 0.03 * this.reallyWidth + 'px'
+        }
       }
       this.$nextTick(() => {
         this.$refs.showImg.style.width = this.reallyWidth * this.size + 'px'
