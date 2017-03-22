@@ -68,11 +68,12 @@ export default {
       var screen = document.documentElement.clientHeight
       var img = this.$refs.showImg
       img.style.height = 'auto'
+      img.style.width = 'auto'
       this.reallyHeight = window.getComputedStyle(img).height.replace('px', '')
       this.reallyWidth = window.getComputedStyle(img).width.replace('px', '')
       if ((screen - 100) < img.height) {
         this.size = (screen - 100) / img.height
-        this.size = this.size.toFixed(3)
+        this.size = parseFloat(this.size.toFixed(3))
         img.style.height = screen - 100 + 'px'
       } else {
         this.size = 1
@@ -116,10 +117,10 @@ export default {
     },
     changeSize () {
       var change = event.deltaY
-      if (change > 0) {
-        this.size -= 0.06
-      } else {
+      if (change < 0) {
         this.size += 0.06
+      } else {
+        this.size = this.size > 0.06 ? this.size - 0.06 : this.size
       }
       this.$nextTick(() => {
         this.$refs.showImg.style.width = this.reallyWidth * this.size + 'px'
