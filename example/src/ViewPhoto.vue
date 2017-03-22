@@ -2,6 +2,8 @@
   <div class="view-photo" :class="{'bg-show': open, 'bg-hidden': !open}" v-if="first">
     <div class="x-show">
       <img
+        @mousedown="startMove"
+        @touchstart="startMove"
         :src="now.url"
         :alt="now.text"
         :style="{
@@ -10,9 +12,10 @@
           'opacity': opacity
           }"
          ref="showImg">
-         <div class="view-close" @click="exit">
-           <i class="iconfont icon-close"></i>
-         </div>
+       <div class="view-close" @click="exit">
+         <i class="iconfont icon-close"></i>
+       </div>
+      <span class="size">{{(this.size * 100).toFixed(1) + '%'}}</span>
     </div>
   </div>
 </template>
@@ -29,7 +32,12 @@ export default {
       left: 0,
       top: 0,
       open: false,
-      first: false
+      first: false,
+      x: 0,
+      y: 0,
+      reallyWidth: 0,
+      reallyHeight: 0,
+      size: 1
     }
   },
   props: {
@@ -40,17 +48,14 @@ export default {
   },
   watch: {
     open () {
-      // var body = document.querySelector('body')
-      // if (this.open) {
-      //   body.style.top = -(document.body.scrollTop) + 'px'
-      //   body.classList.add('model-open')
-      // } else {
-      //   body.classList.remove('model-open')
-      //   var top = body.style.top
-      //   top = top.replace('px', '')
-      //   document.body.scrollTop = -top
-      //   body.style.top = 0
-      // }
+      if (this.open) {
+        window.addEventListener('mousewheel', this.changeSize)
+      } else {
+        window.removeEventListener('mousewheel', this.changeSize)
+        setTimeout(() => {
+          this.now.url = ''
+        }, 600)
+      }
     }
   },
   methods: {
@@ -63,14 +68,64 @@ export default {
       var screen = document.documentElement.clientHeight
       var img = this.$refs.showImg
       img.style.height = 'auto'
+      this.reallyHeight = window.getComputedStyle(img).height.replace('px', '')
+      this.reallyWidth = window.getComputedStyle(img).width.replace('px', '')
       if ((screen - 100) < img.height) {
+        this.size = (screen - 100) / img.height
+        this.size = this.size.toFixed(3)
         img.style.height = screen - 100 + 'px'
+      } else {
+        this.size = 1
       }
       this.$nextTick(() => {
         this.opacity = 1
         this.top = img.height / 2
         this.left = img.width / 2
+        img.style.top = '50%'
+        img.style.left = '50%'
       })
+    },
+    //图片拖动
+    startMove () {
+      window.addEventListener('mousemove', this.move)
+      window.addEventListener('touchmove', this.move)
+      window.addEventListener('mouseup', this.leave)
+      window.addEventListener('touchend', this.leave)
+      var old = window.getComputedStyle(this.$refs.showImg)
+      var x = old.left.replace('px', '')
+      var y = old.top.replace('px', '')
+      this.x = event.clientX ? event.clientX : event.touches[0].clientX
+      this.x += ~(x)
+      this.y = event.clientY ? event.clientY : event.touches[0].clientY
+      this.y += ~(y)
+
+    },
+    // 移动函数
+    move () {
+      event.preventDefault()
+      var nowX = event.clientX ? event.clientX : event.touches[0].clientX
+      var nowY  = event.clientY ? event.clientY : event.touches[0].clientY
+      this.$refs.showImg.style.left = ~~(nowX) - ~~(this.x)  + 'px'
+      this.$refs.showImg.style.top = nowY - this.y + 'px'
+    },
+    leave () {
+      window.removeEventListener('mousemove', this.move)
+      window.removeEventListener('touchmove', this.move)
+      window.removeEventListener('mouseup', this.leave)
+      window.removeEventListener('touchend', this.leave)
+    },
+    changeSize () {
+      var change = event.deltaY
+      if (change > 0) {
+        this.size -= 0.06
+      } else {
+        this.size += 0.06
+      }
+      this.$nextTick(() => {
+        this.$refs.showImg.style.width = this.reallyWidth * this.size + 'px'
+        this.$refs.showImg.style.height = this.reallyHeight * this.size + 'px'
+      })
+      event.preventDefault()
     }
   },
   mounted () {
@@ -85,7 +140,6 @@ export default {
         this.now.text = e.target.alt
         this.opacity = 0
         this.$nextTick(() => {
-          this.showImg()
           this.$refs.showImg.onload = () => {
             // 图片加载成功后布局
             this.showImg()
