@@ -2,6 +2,7 @@
   <div class="view-photo" :class="{'bg-show': open, 'bg-hidden': !open}" v-if="first">
     <div class="x-show">
       <img
+        class="show-img"
         @mousedown="startMove"
         @touchstart="startMove"
         :src="now.url"
@@ -16,6 +17,11 @@
          <i class="iconfont icon-close"></i>
        </div>
       <span class="size">{{(this.size * 100).toFixed(0) + '%'}}</span>
+      <div class="view-control">
+        <div class="show-control">
+          <span class="v-next"><i class="iconfont icon-next"></i></span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -28,6 +34,8 @@ export default {
         url: '',
         text: ''
       },
+      nowId: 0,
+      lists: [],
       opacity: 0,
       left: 0,
       top: 0,
@@ -71,10 +79,10 @@ export default {
       img.style.width = 'auto'
       this.reallyHeight = window.getComputedStyle(img).height.replace('px', '')
       this.reallyWidth = window.getComputedStyle(img).width.replace('px', '')
-      if ((screen - 100) < img.height) {
-        this.size = (screen - 100) / img.height
+      if ((screen - 150) < img.height) {
+        this.size = (screen - 150) / img.height
         this.size = parseFloat(this.size.toFixed(2))
-        img.style.height = screen - 100 + 'px'
+        img.style.height = screen - 150 + 'px'
       } else {
         this.size = 1
       }
@@ -155,6 +163,19 @@ export default {
         this.now.url = e.target.getAttribute('data-max')
         this.now.text = e.target.alt
         this.opacity = 0
+        var lists = Array.prototype.slice.apply(document.querySelectorAll(this.el + ' img'))
+        this.lists = lists.map((item, index) => {
+          if (this.now.url === item.getAttribute('data-max')) {
+            this.nowId = index
+          }
+          return (
+            {
+              src: item.src,
+              url: item.getAttribute('data-max'),
+              text: item.alt
+            }
+          )
+        })
         this.$nextTick(() => {
           this.$refs.showImg.onload = () => {
             // 图片加载成功后布局
@@ -168,7 +189,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-  @import url(https://at.alicdn.com/t/font_9pq34qq2nhnkx1or.css);
+  @import url(https://at.alicdn.com/t/font_6j0cuk14qwd0a4i.css);
   .view-photo {
     position: fixed;
     width: 100vw;
@@ -185,7 +206,7 @@ export default {
       height: 100%;
       top: 0;
 
-      img {
+      img.show-img {
         position: absolute;
         cursor: -webkit-grab;
         user-select: none;
@@ -211,6 +232,14 @@ export default {
             color: white;
           }
       }
+
+      .view-control {
+        position: absolute;
+        width: 100%;
+        height: 60px;
+        bottom: 0;
+        background-color: rgba(0,0,0,.5);
+      }
     }
   }
 
@@ -224,9 +253,9 @@ export default {
   .bg-show {
     animation: fadeIn 0.3s ease-out 1;
 
-    .x-show img {
+    .x-show img.show-img {
       visibility: hidden;
-      animation: scaleIn 0.3s ease-out 0.3s 1;
+      animation: scaleIn 0.3s ease-out 1;
       animation-fill-mode: forwards;
     }
   }
@@ -235,7 +264,7 @@ export default {
     animation: fadeOut 0.3s ease-out 0.3s 1;
     animation-fill-mode: forwards;
 
-    .x-show img {
+    .x-show img.show-img {
       animation: scaleOut 0.3s ease-out 1;
       animation-fill-mode: forwards;
     }
