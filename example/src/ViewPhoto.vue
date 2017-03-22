@@ -19,7 +19,8 @@
       <span class="size">{{(this.size * 100).toFixed(0) + '%'}}</span>
       <div class="view-control">
         <div class="show-control">
-          <span class="v-next"><i class="iconfont icon-next"></i></span>
+          <span class="v-pre" @click="pre"><i class="iconfont icon-pre"></i></span>
+          <span class="v-next" @click="next"><i class="iconfont icon-next"></i></span>
         </div>
       </div>
     </div>
@@ -58,12 +59,18 @@ export default {
     open () {
       if (this.open) {
         window.addEventListener('mousewheel', this.changeSize)
+        document.body.style.overflow = 'hidden'
       } else {
         window.removeEventListener('mousewheel', this.changeSize)
         setTimeout(() => {
           this.now.url = ''
+          document.body.style.overflow = 'auto'
         }, 600)
       }
+    },
+    nowId () {
+      this.now.url = this.lists[this.nowId].url
+      this.now.text = this.lists[this.nowId].text
     }
   },
   methods: {
@@ -79,18 +86,18 @@ export default {
       img.style.width = 'auto'
       this.reallyHeight = window.getComputedStyle(img).height.replace('px', '')
       this.reallyWidth = window.getComputedStyle(img).width.replace('px', '')
-      if ((screen - 150) < img.height) {
-        this.size = (screen - 150) / img.height
+      if ((screen - 100) < img.height) {
+        this.size = (screen - 100) / img.height
         this.size = parseFloat(this.size.toFixed(2))
-        img.style.height = screen - 150 + 'px'
+        img.style.height = screen - 100 + 'px'
       } else {
         this.size = 1
       }
       this.$nextTick(() => {
         this.opacity = 1
-        this.top = img.height / 2
+        this.top = img.height / 5
         this.left = img.width / 2
-        img.style.top = '50%'
+        img.style.top = '20%'
         img.style.left = '50%'
       })
     },
@@ -117,12 +124,14 @@ export default {
       this.$refs.showImg.style.left = ~~(nowX) - ~~(this.x)  + 'px'
       this.$refs.showImg.style.top = nowY - this.y + 'px'
     },
+
     leave () {
       window.removeEventListener('mousemove', this.move)
       window.removeEventListener('touchmove', this.move)
       window.removeEventListener('mouseup', this.leave)
       window.removeEventListener('touchend', this.leave)
     },
+
     changeSize () {
       var change = event.deltaY
       var top = window.getComputedStyle(this.$refs.showImg).top.replace('px', '')
@@ -150,6 +159,19 @@ export default {
         this.$refs.showImg.style.height = this.reallyHeight * this.size + 'px'
       })
       event.preventDefault()
+    },
+
+    // 下一张
+    next () {
+      if (this.nowId < this.lists.length - 1) {
+        this.nowId += 1
+      }
+    },
+
+    pre () {
+      if (this.nowId > 1) {
+        this.nowId -= 1
+      }
     }
   },
   mounted () {
@@ -216,8 +238,8 @@ export default {
 
       .view-close {
         position: absolute;
-        top: -30px;
-        right: -20px;
+        top: -40px;
+        right: -40px;
         width: 80px;
         height: 80px;
         cursor: pointer;
@@ -226,7 +248,7 @@ export default {
         background-color: rgba(0,0,0,.5);
           i {
             position: absolute;
-            top: 40px;
+            top: 45px;
             right: 40px;
             font-size: 30px;
             color: white;
@@ -239,6 +261,29 @@ export default {
         height: 60px;
         bottom: 0;
         background-color: rgba(0,0,0,.5);
+
+        .show-control {
+          width: 200px;
+          margin: auto;
+          display: flex;
+
+          span {
+            width: 100px;
+            text-align: center;
+            cursor: pointer;
+
+            i {
+              color: rgba(255, 255, 255, .8);
+              font-size: 25px;
+              line-height: 60px;
+              transition: color .3s ease-out;
+            }
+          }
+
+          span:hover i {
+            color: rgba(255, 255, 255, 1)
+          }
+        }
       }
     }
   }
