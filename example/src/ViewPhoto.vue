@@ -1,5 +1,5 @@
 <template>
-  <div class="view-photo" v-show="open" @click="exit">
+  <div class="view-photo" :class="{'bg-show': open, 'bg-hidden': !open}" v-if="first">
     <div class="x-show">
       <img
         :src="now.url"
@@ -10,6 +10,9 @@
           'opacity': opacity
           }"
          ref="showImg">
+         <div class="view-close" @click="exit">
+           <i class="iconfont icon-close"></i>
+         </div>
     </div>
   </div>
 </template>
@@ -25,7 +28,8 @@ export default {
       opacity: 0,
       left: 0,
       top: 0,
-      open: false
+      open: false,
+      first: false
     }
   },
   props: {
@@ -73,24 +77,28 @@ export default {
     // this.open = true
     document.querySelector(this.el).addEventListener('click', (e) => {
       if (e.target.nodeName === "IMG") {
+        if (!this.first) {
+          this.first = true
+        }
         this.open = true
         this.now.url = e.target.getAttribute('data-max')
         this.now.text = e.target.alt
         this.opacity = 0
         this.$nextTick(() => {
           this.showImg()
+          this.$refs.showImg.onload = () => {
+            // 图片加载成功后布局
+            this.showImg()
+          }
         })
-        this.$refs.showImg.onload = () => {
-          // 图片加载成功后布局
-          this.showImg()
-        }
       }
     })
   }
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
+  @import url(https://at.alicdn.com/t/font_9pq34qq2nhnkx1or.css);
   .view-photo {
     position: fixed;
     width: 100vw;
@@ -114,6 +122,25 @@ export default {
         top: 50%;
         left: 50%;
       }
+
+      .view-close {
+        position: absolute;
+        top: -30px;
+        right: -20px;
+        width: 80px;
+        height: 80px;
+        cursor: pointer;
+        border-radius: 50%;
+        background-color: #000;
+        background-color: rgba(0,0,0,.5);
+          i {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            font-size: 30px;
+            color: white;
+          }
+      }
     }
   }
 
@@ -122,5 +149,71 @@ export default {
     position: fixed;
     width: 100%;
     top: 0;
+  }
+
+  .bg-show {
+    animation: fadeIn 0.3s ease-out 1;
+
+    .x-show img {
+      visibility: hidden;
+      animation: scaleIn 0.3s ease-out 0.3s 1;
+      animation-fill-mode: forwards;
+    }
+  }
+
+  .bg-hidden {
+    animation: fadeOut 0.3s ease-out 0.3s 1;
+    animation-fill-mode: forwards;
+
+    .x-show img {
+      animation: scaleOut 0.3s ease-out 1;
+      animation-fill-mode: forwards;
+    }
+  }
+
+
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+
+    100% {
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+
+  @keyframes scaleIn {
+    0% {
+      visibility: visible;
+      transform: scale3d(0, 0, 0);
+    }
+
+    100% {
+      visibility: visible;
+      transform: scale3d(1, 1, 1);
+    }
+  }
+
+  @keyframes scaleOut {
+    0% {
+      transform: scale3d(1, 1, 1);
+    }
+
+    100% {
+      visibility: hidden;
+      transform: scale3d(0, 0, 0);
+    }
   }
 </style>
