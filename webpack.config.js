@@ -14,54 +14,52 @@ module.exports = {
     port: 8871
   },
   module: {
-    rules: [
-      {
-       test: /\.js$/,
-       exclude: /(node_modules|bower_components)/,
-       loader: 'babel-loader',
-       query: {
-         presets: ['es2015']
-       }
-     },
-     {
+    rules: [{
+      test: /\.js$/,
+      exclude: /(node_modules|bower_components)/,
+      loader: 'babel-loader',
+      query: {
+        presets: ['es2015']
+      }
+    },
+    {
       test: /\.vue$/,
       loader: 'vue-loader'
     },
-     {
-        test: /\.scss$/,
-        use: [{
-            loader: "style-loader"
-        }, {
-            loader: "css-loader"
-        }, {
-            loader: "sass-loader"
-        }, {
-            loader: 'postcss-loader',
-            options: {
-              plugins: function () {
-                return [
-                  require('precss'),
-                  require('autoprefixer')
-                ];
-              }
-            }
-        }]
-      }
-    ]
+    {
+      test: /\.scss$/,
+      use: [{
+        loader: "style-loader"
+      },
+      {
+        loader: "css-loader"
+      },
+      {
+        loader: "sass-loader"
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          plugins: function() {
+            return [require('precss'), require('autoprefixer')];
+          }
+        }
+      }]
+    }]
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-   // 开启全局的模块热替换(HMR)
+  plugins: [new webpack.HotModuleReplacementPlugin(),
+  // 开启全局的模块热替换(HMR)
   //  new ExtractTextPlugin("index.scss")
-    new webpack.NamedModulesPlugin(),
-   // 当模块热替换(HMR)时在浏览器控制台输出对用户更友好的模块名字信息
-
-   // 压缩
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: false,
-      }
-    }),
- ],
+  new webpack.NamedModulesPlugin(),
+  // 当模块热替换(HMR)时在浏览器控制台输出对用户更友好的模块名字信息
+  // 压缩
+  new webpack.LoaderOptionsPlugin({
+    minimize: true
+  }), new webpack.optimize.UglifyJsPlugin({
+    beautify: false,
+    comments: false,
+    compress: {
+      warnings: false
+    }
+  })],
 }

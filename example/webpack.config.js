@@ -57,11 +57,15 @@ module.exports = {
    // 当模块热替换(HMR)时在浏览器控制台输出对用户更友好的模块名字信息
 
    // 压缩
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        drop_console: false,
-      }
-    }),
+   new webpack.LoaderOptionsPlugin({
+     minimize: true
+   }),
+   new webpack.optimize.UglifyJsPlugin({
+     beautify: false,
+     comments: false,
+     compress: {
+       warnings: false
+     }
+   })
  ],
 }

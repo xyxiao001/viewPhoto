@@ -1,3 +1,3 @@
-import viewPhoto from './view-photo.vue';
+import viewPhoto from './viewPhoto.vue';
 
 export default viewPhoto
