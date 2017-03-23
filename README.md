@@ -1,3 +1,2 @@
 ## 图片查看器 viewphoto
-#### 参考2345
-#### 2017.3.21 开始动工vue版本
+## npm install view-photo

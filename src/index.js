@@ -1,3 +1,3 @@
 import viewPhoto from './viewPhoto.vue';
 
-export default viewPhoto
+module.exports = ViewPhoto
