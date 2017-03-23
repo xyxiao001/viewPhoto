@@ -124,8 +124,8 @@ export default {
         img.style.left = '50%'
       })
     },
-    //图片拖动
-    startMove () {
+    // 图片拖动
+    startMove (event) {
       window.addEventListener('mousemove', this.move)
       window.addEventListener('touchmove', this.move)
       window.addEventListener('mouseup', this.leave)
@@ -137,14 +137,13 @@ export default {
       this.x += ~(x)
       this.y = event.clientY ? event.clientY : event.touches[0].clientY
       this.y += ~(y)
-
     },
     // 移动函数
-    move () {
+    move (event) {
       event.preventDefault()
       var nowX = event.clientX ? event.clientX : event.touches[0].clientX
-      var nowY  = event.clientY ? event.clientY : event.touches[0].clientY
-      this.$refs.showImg.style.left = ~~(nowX) - ~~(this.x)  + 'px'
+      var nowY = event.clientY ? event.clientY : event.touches[0].clientY
+      this.$refs.showImg.style.left = ~~(nowX) - ~~(this.x) + 'px'
       this.$refs.showImg.style.top = nowY - this.y + 'px'
     },
 
@@ -155,13 +154,13 @@ export default {
       window.removeEventListener('touchend', this.leave)
     },
 
-    changeSize () {
+    changeSize (event) {
       this.showSize = true
       var change = event.deltaY
       var top = window.getComputedStyle(this.$refs.showImg).top.replace('px', '')
       var left = window.getComputedStyle(this.$refs.showImg).left.replace('px', '')
       if (change < 0) {
-        if (this.size > 0.9 && this.size < 1 ) {
+        if (this.size > 0.9 && this.size < 1) {
           var num = 1 - this.size
           this.size = 1
           this.$refs.showImg.style.top = ~~(top) - num / 2 * this.reallyHeight + 'px'
@@ -212,7 +211,7 @@ export default {
   mounted () {
     // this.open = true
     document.querySelector(this.el).addEventListener('click', (e) => {
-      if (e.target.nodeName === "IMG") {
+      if (e.target.nodeName === 'IMG') {
         if (!this.first) {
           this.first = true
           this.$nextTick(() => {
@@ -232,11 +231,11 @@ export default {
             this.nowId = index
           }
           return (
-            {
-              src: item.src,
-              url: item.getAttribute('data-max'),
-              text: item.alt
-            }
+          {
+            src: item.src,
+            url: item.getAttribute('data-max'),
+            text: item.alt
+          }
           )
         })
       }
@@ -245,7 +244,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="scss" scoped>
   @import url(https://at.alicdn.com/t/font_6j0cuk14qwd0a4i.css);
   .view-photo {
     position: fixed;
@@ -379,28 +378,28 @@ export default {
   }
 
   .bg-show {
-    animation: fadeIn 0.3s ease-out 1;
+    animation: vfadeIn 0.3s ease-out 1;
 
-    .x-show img.show-img {
+    img.show-img {
       visibility: hidden;
-      animation: scaleIn 0.3s ease-out 1;
+      animation: vscaleIn 0.3s ease-out 1;
       animation-fill-mode: forwards;
     }
   }
 
   .bg-hidden {
-    animation: fadeOut 0.3s ease-out 0.3s 1;
+    animation: vfadeOut 0.3s ease-out 0.3s 1;
     animation-fill-mode: forwards;
 
-    .x-show img.show-img {
-      animation: scaleOut 0.3s ease-out 1;
+    img.show-img {
+      animation: vscaleOut 0.3s ease-out 1;
       animation-fill-mode: forwards;
     }
   }
 
 
 
-  @keyframes fadeIn {
+  @keyframes vfadeIn {
     0% {
       opacity: 0;
     }
@@ -410,7 +409,7 @@ export default {
     }
   }
 
-  @keyframes fadeOut {
+  @keyframes vfadeOut {
     0% {
       opacity: 1;
     }
@@ -421,7 +420,7 @@ export default {
     }
   }
 
-  @keyframes scaleIn {
+  @keyframes vscaleIn {
     0% {
       visibility: visible;
       transform: scale3d(0, 0, 0);
@@ -433,7 +432,7 @@ export default {
     }
   }
 
-  @keyframes scaleOut {
+  @keyframes vscaleOut {
     0% {
       transform: scale3d(1, 1, 1);
     }

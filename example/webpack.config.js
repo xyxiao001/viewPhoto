@@ -22,30 +22,15 @@ module.exports = {
        query: {
          presets: ['es2015']
        }
-     },
-     {
-      test: /\.vue$/,
-      loader: 'vue-loader'
-    },
-     {
-        test: /\.scss$/,
-        use: [{
-            loader: "style-loader"
-        }, {
-            loader: "css-loader"
-        }, {
-            loader: "sass-loader"
-        }, {
-            loader: 'postcss-loader',
-            options: {
-              plugins: function () {
-                return [
-                  require('precss'),
-                  require('autoprefixer')
-                ];
-              }
-            }
-        }]
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {
+            'scss': 'style-loader!css-loader!sass-loader'
+          }
+        }
       }
     ]
   },
